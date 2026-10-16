@@ -1,0 +1,717 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Strict Enough to Dance</title>
+<meta name="description" content="An essay on the design quality of Porto Rocha: the studio's ethos, its quality standard, and what specifically makes the work good.">
+<meta name="theme-color" content="#F1EFE8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --paper:#F1EFE8;
+  --ink:#111110;
+  --signal:#FF4B1F;
+  --mute:#6B6A64;
+  --mute-ink:#A19F97;
+  --rule:rgba(17,17,16,.16);
+  --rule-ink:rgba(241,239,232,.22);
+  --g:clamp(16px,2.6vw,40px);
+  --bar:48px;
+  --sans:"Archivo","Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--paper);-webkit-text-size-adjust:100%;text-size-adjust:100%}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:18px;line-height:1.5;font-weight:400;font-stretch:100%;font-kerning:normal;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:hidden;overflow-x:clip}
+svg{display:block;max-width:100%}
+a{color:inherit}
+::selection{background:var(--signal);color:var(--ink)}
+:focus-visible{outline:2px solid currentColor;outline-offset:3px}
+[id]{scroll-margin-top:calc(var(--bar) + 8px)}
+.sr{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
+.defs{position:absolute;width:0;height:0;overflow:hidden}
+.mono{font-family:var(--mono);font-size:12px;line-height:1.6;letter-spacing:.01em;font-weight:400;font-stretch:normal}
+.cap{text-transform:uppercase;letter-spacing:.08em}
+.skip{position:absolute;left:var(--g);top:-80px;z-index:30;background:var(--ink);color:var(--paper);padding:12px 16px;font-family:var(--mono);font-size:12px;text-decoration:none}
+.skip:focus{top:8px}
+.wrap{width:100%;max-width:1440px;margin:0 auto;padding:0 var(--g)}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));column-gap:var(--g)}
+@media (min-width:900px){.grid{grid-template-columns:repeat(12,minmax(0,1fr))}}
+
+/* Top bar */
+.bar{position:sticky;top:0;z-index:10;height:var(--bar);background:var(--paper);border-bottom:1px solid var(--ink)}
+.bar-in{height:100%;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.bar-id{display:flex;align-items:center;gap:10px;text-decoration:none;min-width:0}
+.bar-id svg{width:20px;height:20px;flex:none}
+.bar-title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-sec{white-space:nowrap;flex:none}
+.bar-prog{position:absolute;left:0;right:0;bottom:-1px;height:3px;pointer-events:none}
+.bar-prog span{display:block;height:100%;background:var(--signal);transform:scaleX(0);transform-origin:0 50%}
+
+/* Kinetic type */
+.kin{display:block}
+.kin .ln{display:block;white-space:nowrap}
+
+/* Hero */
+.hero{overflow-x:hidden;overflow-x:clip}
+.hero-in{min-height:calc(100vh - var(--bar));min-height:calc(100svh - var(--bar));display:flex;flex-direction:column;justify-content:space-between;gap:clamp(36px,5vw,64px);padding-top:clamp(14px,2vw,24px);padding-bottom:clamp(32px,4vw,56px)}
+.hero-meta{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 24px;border-top:1px solid var(--ink);padding-top:10px}
+.hero-title{margin:0;font-size:clamp(56px,15.5vw,232px);line-height:.9;letter-spacing:-.035em;font-weight:560;font-stretch:93.5%}
+.hero-foot{row-gap:28px;align-items:end}
+.dek{grid-column:1/-1;margin:0;font-size:clamp(20px,1.3vw + 14px,30px);line-height:1.25;letter-spacing:-.01em;max-width:26em;text-wrap:pretty}
+.readout{grid-column:1/-1;border-top:1px solid var(--ink);padding-top:10px}
+@media (min-width:900px){.dek{grid-column:1/span 7}.readout{grid-column:9/span 4}}
+.readout p{margin:0}
+.ro-h{color:var(--mute)}
+.readout .ro-live{margin-top:8px;font-variant-numeric:tabular-nums}
+.btn{margin-top:14px;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);background:transparent;border:1px solid var(--ink);border-radius:0;padding:0 16px;min-height:44px;cursor:pointer}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.btn:disabled{cursor:default;color:var(--mute);border-color:var(--mute);background:transparent}
+
+/* Sections */
+.sec{padding:clamp(72px,9vw,144px) 0 clamp(16px,2vw,32px)}
+.sec-grid{border-top:1px solid var(--ink);padding-top:16px;row-gap:28px}
+.sec-head{grid-column:1/-1;align-self:start}
+.body{grid-column:1/-1;min-width:0}
+@media (min-width:900px){
+  .sec-head{grid-column:1/span 4;position:sticky;top:calc(var(--bar) + 24px)}
+  .body{grid-column:5/span 8}
+}
+.num{display:block;font-size:clamp(72px,8vw,128px);line-height:.78;font-stretch:62%;font-weight:820;letter-spacing:-.02em}
+.sec-head h2{margin:18px 0 0;font-size:clamp(26px,1.4vw + 18px,40px);line-height:1.04;font-stretch:125%;font-weight:300;letter-spacing:-.015em;max-width:12em;text-wrap:balance}
+.body p{margin:0 0 1.1em;max-width:36em;font-size:clamp(18px,.35vw + 16px,21px);line-height:1.56;text-wrap:pretty;hanging-punctuation:first allow-end last}
+.body p.lede{font-size:clamp(21px,.9vw + 16px,28px);line-height:1.36;letter-spacing:-.008em;max-width:30em}
+.body em{font-style:normal;font-stretch:112%;font-weight:620}
+
+/* Figures */
+.fig{margin:clamp(36px,5vw,72px) 0 clamp(40px,5vw,72px)}
+.fig figcaption{margin-top:12px;color:var(--mute);max-width:64ch}
+.fig figcaption b{color:var(--ink);font-weight:500}
+
+/* Fig 1: applications */
+.apps{display:flex;flex-direction:column;gap:12px}
+.apps-right{display:flex;flex-direction:column;gap:12px;min-width:0}
+.apps-row{display:flex;gap:12px}
+.app{position:relative;overflow:hidden;container-type:inline-size;min-width:0}
+.app-tag{position:absolute;top:10px;left:12px;z-index:1;font-family:var(--mono);font-size:10.5px;line-height:1.4;text-transform:uppercase;letter-spacing:.08em}
+.app-poster{aspect-ratio:3/4;background:var(--signal);color:var(--ink);display:flex;flex-direction:column;justify-content:space-between;padding:12px}
+.app-poster .kin{font-size:14vw;font-size:15cqi;line-height:.9;letter-spacing:-.035em;margin-top:9cqi}
+.app-foot{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.08em}
+.app-banner{aspect-ratio:2/1;background:var(--ink);color:var(--paper);display:flex;align-items:center;padding:0 16px}
+.app-banner .kin{font-size:4.8vw;font-size:6.6cqi;line-height:1;letter-spacing:-.02em}
+.app-mark{flex:0 0 calc(50% - 6px);aspect-ratio:1/1;background:var(--signal);color:var(--ink)}
+.app-mark svg{width:100%;height:100%}
+.app-note{flex:1 1 0;background:var(--paper);border:1px solid var(--ink);padding:12px;display:flex;flex-direction:column;justify-content:flex-end;gap:2px}
+@media (min-width:900px){
+  .apps{flex-direction:row;align-items:stretch}
+  .app-poster{flex:0 0 44%}
+  .apps-right{flex:1 1 0}
+  .app-banner{aspect-ratio:auto;flex:1 1 auto;min-height:120px}
+}
+
+/* Fig 2: design space */
+.mx-axes{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 16px;margin-bottom:10px;color:var(--mute)}
+.matrix{display:grid;grid-template-columns:auto repeat(5,minmax(0,1fr));container-type:inline-size}
+.mx-l{font-family:var(--mono);font-size:11px;color:var(--mute);display:flex;align-items:center;justify-content:center;padding:8px 4px}
+.mx-l.hd{border-bottom:1px solid var(--ink)}
+.mx-l.v{justify-content:flex-start;padding:0 10px 0 0}
+.mx-c{display:flex;align-items:center;justify-content:center;aspect-ratio:1/1;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);font-size:clamp(28px,7vw,72px);font-size:11cqi;line-height:1}
+.mx-l.v + .mx-c{border-left:1px solid var(--rule)}
+.mx-c.on{background:var(--signal)}
+
+/* Fig 3: score */
+.score-panel{background:var(--ink);color:var(--paper);padding:clamp(16px,3vw,32px);container-type:inline-size;overflow:hidden}
+.score-panel .kin{margin:4px 0 20px;font-size:5vw;font-size:6.4cqi;line-height:1.05;letter-spacing:-.02em}
+.score{width:100%;height:auto}
+.score text{font-family:var(--mono);font-size:12px;fill:var(--mute-ink)}
+.score .labels text{font-size:13px;fill:var(--paper)}
+.score .gl{stroke:var(--rule-ink);stroke-width:1}
+.score .pw{fill:none;stroke:var(--signal);stroke-width:3;stroke-linejoin:round;stroke-linecap:round}
+.score .pg{fill:none;stroke:var(--paper);stroke-width:1.25;stroke-dasharray:4 4}
+.score .dots circle{fill:var(--paper)}
+.score-legend{display:flex;flex-wrap:wrap;gap:6px 24px;margin-top:12px;color:var(--mute-ink)}
+.lg{display:inline-block;width:20px;vertical-align:middle;margin-right:8px}
+.lg-w{height:3px;background:var(--signal)}
+.lg-g{height:0;border-top:1.5px dashed var(--paper)}
+
+/* Fig 4: budget */
+.budget{display:flex;height:clamp(56px,7vw,88px);border:1px solid var(--ink)}
+.budget span:nth-child(1){flex:74 1 0;background:var(--paper)}
+.budget span:nth-child(2){flex:20 1 0;background:var(--ink)}
+.budget span:nth-child(3){flex:6 1 0;background:var(--signal)}
+.legend{display:grid;grid-template-columns:1fr;gap:14px;margin:16px 0 0}
+@media (min-width:640px){.legend{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.legend dt{display:flex;align-items:center;gap:8px;font-weight:500}
+.legend dd{margin:4px 0 0;color:var(--mute)}
+.sw{display:inline-block;width:12px;height:12px;border:1px solid var(--ink);flex:none}
+.sw-paper{background:var(--paper)}.sw-ink{background:var(--ink)}.sw-signal{background:var(--signal)}
+
+/* Fig 5: stress test */
+.stress{display:grid;gap:32px;border-top:1px solid var(--ink);padding-top:16px}
+@media (min-width:700px){.stress{grid-template-columns:auto 1fr;align-items:end;column-gap:56px}}
+.sx-master p{margin:10px 0 0;color:var(--mute)}
+.sx-master b{color:var(--ink);font-weight:500}
+.mk{display:block}
+.mk-xl{width:160px;height:160px}
+.mk-m{width:64px;height:64px}
+.mk-s{width:24px;height:24px}
+.mk-xs{width:16px;height:16px}
+.sx-table{display:grid;grid-template-columns:repeat(3,max-content);justify-content:start;align-items:end;column-gap:clamp(16px,3vw,36px);row-gap:10px}
+.sx-corner{display:none}
+.sx-h{color:var(--mute)}
+.sx-row{grid-column:1/-1;margin-top:10px;font-weight:500}
+.sx-c{display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.sx-c .mono{color:var(--mute)}
+@media (min-width:520px){
+  .sx-table{grid-template-columns:auto repeat(3,max-content)}
+  .sx-corner{display:block}
+  .sx-row{grid-column:auto;margin-top:0;align-self:end;padding-bottom:26px}
+}
+
+/* Bands */
+.band{padding:clamp(72px,10vw,160px) 0}
+.band-signal{background:var(--signal);color:var(--ink)}
+.band-ink{background:var(--ink);color:var(--paper)}
+.band-q{margin:0;font-size:clamp(36px,6vw,100px);line-height:.96;letter-spacing:-.03em;font-stretch:76%;font-weight:760;max-width:15em;text-wrap:balance;text-indent:-.36em}
+@supports (hanging-punctuation:first){.band-q{text-indent:0;hanging-punctuation:first}}
+.band-src{margin:24px 0 0}
+
+/* Colophon */
+.colo{background:var(--ink);color:var(--paper);padding:clamp(72px,9vw,144px) 0 40px;overflow-x:hidden;overflow-x:clip}
+.colo-kin{margin:0 0 clamp(48px,7vw,96px);font-size:clamp(44px,10.5vw,168px);line-height:.9;letter-spacing:-.035em;font-weight:560;font-stretch:93.5%}
+.colo-h{margin:0 0 14px;color:var(--mute-ink);font-weight:400}
+.spec{border-top:1px solid var(--paper);padding-top:16px;row-gap:32px;margin:0}
+.spec > div{grid-column:1/-1}
+@media (min-width:640px){.spec > div{grid-column:span 2}}
+@media (min-width:900px){.spec > div{grid-column:span 4}}
+.spec dt{color:var(--mute-ink)}
+.spec dd{margin:8px 0 0;font-size:16px;line-height:1.5;max-width:32em}
+.fine{margin-top:64px;color:var(--mute-ink);display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px;border-top:1px solid var(--rule-ink);padding-top:12px}
+</style>
+</head>
+<body>
+<a class="skip" href="#s01">Skip to the essay</a>
+
+<svg class="defs" width="0" height="0" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="m9" viewBox="0 0 100 100">
+      <rect width="100" height="100" fill="#FF4B1F"/>
+      <g fill="#111110">
+        <rect x="12" y="12" width="5.78" height="76"/>
+        <rect x="20.78" y="12" width="4.53" height="76"/>
+        <rect x="28.31" y="12" width="3.86" height="76"/>
+        <rect x="35.17" y="12" width="4.09" height="76"/>
+        <rect x="42.26" y="12" width="5.11" height="76"/>
+        <rect x="50.37" y="12" width="6.44" height="76"/>
+        <rect x="59.81" y="12" width="7.46" height="76"/>
+        <rect x="70.27" y="12" width="7.70" height="76"/>
+        <rect x="80.97" y="12" width="7.03" height="76"/>
+      </g>
+    </symbol>
+    <symbol id="m5" viewBox="0 0 100 100">
+      <rect width="100" height="100" fill="#FF4B1F"/>
+      <g fill="#111110">
+        <rect x="12" y="12" width="11.20" height="76"/>
+        <rect x="28.20" y="12" width="7.61" height="76"/>
+        <rect x="40.81" y="12" width="8.98" height="76"/>
+        <rect x="54.79" y="12" width="13.42" height="76"/>
+        <rect x="73.21" y="12" width="14.79" height="76"/>
+      </g>
+    </symbol>
+    <symbol id="m3" viewBox="0 0 100 100">
+      <rect width="100" height="100" fill="#FF4B1F"/>
+      <g fill="#111110">
+        <rect x="12" y="12" width="18.67" height="76"/>
+        <rect x="40.67" y="12" width="13.22" height="76"/>
+        <rect x="63.89" y="12" width="24.11" height="76"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+
+<header class="bar">
+  <div class="wrap bar-in">
+    <a class="bar-id" href="#top">
+      <svg viewBox="0 0 100 100" width="20" height="20" aria-hidden="true" focusable="false"><use href="#m3"/></svg>
+      <span class="bar-title mono cap">Strict enough to dance</span>
+    </a>
+    <span class="bar-sec mono" aria-hidden="true">§ <span id="secnow">00</span> / 08</span>
+  </div>
+  <span class="bar-prog" aria-hidden="true"><span id="prog"></span></span>
+</header>
+
+<main>
+<section class="hero" id="top" data-sec="00" aria-labelledby="title">
+  <div class="wrap hero-in">
+    <div class="hero-meta">
+      <span class="mono cap">Essay</span>
+      <span class="mono cap">On Porto Rocha</span>
+      <span class="mono cap">Ethos · Standard · Craft</span>
+      <span class="mono cap">8 sections</span>
+    </div>
+    <h1 class="hero-title" id="title"><span class="sr">Strict enough to dance.</span><span class="kin" aria-hidden="true"><span class="ln">Strict</span><span class="ln">enough</span><span class="ln">to dance.</span></span></h1>
+    <div class="grid hero-foot">
+      <p class="dek">An essay on the design quality of Porto Rocha: what the studio believes, the standard it holds itself to, and what specifically makes the work good.</p>
+      <div class="readout mono">
+        <p class="ro-h cap">The rule that sets the title</p>
+        <p>φ = 1.6t − 0.42i</p>
+        <p>wdth = 93.5 + 31.5 · sin φ</p>
+        <p>wght = 560 − 260 · sin φ</p>
+        <p class="ro-live" aria-hidden="true">Now, i = 0 (“S”): wdth <span id="roW">93.5</span> · wght <span id="roG">560</span></p>
+        <button class="btn" id="motion" type="button">Pause motion</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="s01" data-sec="01" aria-labelledby="h01">
+  <div class="wrap"><div class="grid sec-grid">
+    <header class="sec-head"><span class="num" aria-hidden="true">01</span><h2 id="h01">The false choice</h2></header>
+    <div class="body">
+      <p class="lede">Every identity designer eventually reaches the same fork. One road leads to the system: the grid, the clear-space diagram, the guidelines document that guarantees consistency and too often produces work that is correct and inert. The other road leads to expression: the poster, the launch film, the campaign that looks extraordinary once and cannot be repeated by anyone who was not in the room when it was made. Most studios choose a road and call the choice a philosophy.</p>
+      <p>Porto Rocha, the New York studio founded by Leo Porto and Felipe Rocha, rewards close attention because its strongest work refuses the fork. The argument of this essay is that the quality of that work comes from one discipline applied without exception: <em>every expressive gesture is produced by a rule, and every rule is kept only if it makes something expressive possible.</em></p>
+      <p>The studio’s real quality standard follows from that discipline. The standard is not whether the logo is beautiful. It is whether the brand keeps its voice under stress: in motion, at the size of a browser tab, repeated across a thousand applications, and in the hands of people who will never meet the designers. That test is harder than beauty, and passing it is what makes the work good rather than merely attractive.</p>
+      <p>A note on method. This is a reading of the work, not a history of the studio. It names no clients and describes no individual projects, because it was written without sources at hand, and an argument about rigor should not invent its evidence. Every claim below about the work is interpretation. The page itself is offered as evidence instead: it is built on the principles it describes, and each figure demonstrates one of them.</p>
+    </div>
+  </div></div>
+</section>
+
+<section class="sec" id="s02" data-sec="02" aria-labelledby="h02">
+  <div class="wrap"><div class="grid sec-grid">
+    <header class="sec-head"><span class="num" aria-hidden="true">02</span><h2 id="h02">An identity is a behavior</h2></header>
+    <div class="body">
+      <p>The conventional unit of an identity is the mark. It is presented first, approved first, and reproduced first when a rebrand is announced. In the work this essay describes, the mark is seldom where the identity lives. The identity lives in behavior: how letters move, how color enters a frame, how a layout stretches when the format changes from a billboard to a phone screen. The logo is what the behavior leaves behind when you pause it.</p>
+      <p>The distinction changes what the designer is making. Drawing a logo produces an object. Designing a behavior means writing a rule that will go on producing objects nobody has imagined yet: next year’s event poster, a notification inside an app, packaging for a market the client has not entered. The real deliverable is the generator, not any single output of it.</p>
+      <p>It also changes how such work has to be judged. A still image of a behavior-led identity is one frame of a film, and judging the identity from that frame is like judging a typeface from one letter. The evidence of quality is in sequence: whether the tenth application feels as inevitable as the first, and whether the system produces surprise without producing noise.</p>
+      <p>Figure 1 makes the point at small scale. Three formats, a poster, a banner and a mark, are driven by one rule and one clock. None of them is the master version from which the others were adapted. The identity is the set, together with the rule that produces it.</p>
+      <figure class="fig">
+        <div class="apps" aria-hidden="true">
+          <div class="app app-poster">
+            <span class="app-tag">Poster · 3:4</span>
+            <div class="kin"><span class="ln">Strict</span><span class="ln">enough</span><span class="ln">to dance.</span></div>
+            <span class="app-foot">An essay on Porto Rocha</span>
+          </div>
+          <div class="apps-right">
+            <div class="app app-banner">
+              <span class="app-tag">Banner</span>
+              <div class="kin"><span class="ln">strict enough to dance</span></div>
+            </div>
+            <div class="apps-row">
+              <div class="app app-mark">
+                <span class="app-tag">Mark · 1:1</span>
+                <svg class="live-mark" viewBox="0 0 100 100" data-gap="3" focusable="false">
+                  <rect width="100" height="100" fill="#FF4B1F"/>
+                  <rect class="lm-bar" x="12" y="12" width="5.78" height="76" fill="#111110"/>
+                  <rect class="lm-bar" x="20.78" y="12" width="4.53" height="76" fill="#111110"/>
+                  <rect class="lm-bar" x="28.31" y="12" width="3.86" height="76" fill="#111110"/>
+                  <rect class="lm-bar" x="35.17" y="12" width="4.09" height="76" fill="#111110"/>
+                  <rect class="lm-bar" x="42.26" y="12" width="5.11" height="76" fill="#111110"/>
+                  <rect class="lm-bar" x="50.37" y="12" width="6.44" height="76" fill="#111110"/>
+                  <rect class="lm-bar" x="59.81" y="12" width="7.46" height="76" fill="#111110"/>
+                  <rect class="lm-bar" x="70.27" y="12" width="7.70" height="76" fill="#111110"/>
+                  <rect class="lm-bar" x="80.97" y="12" width="7.03" height="76" fill="#111110"/>
+                </svg>
+              </div>
+              <div class="app app-note mono">
+                <span class="app-tag">Spec</span>
+                <span>Formats 3</span>
+                <span>Rules 1</span>
+                <span>Clocks 1</span>
+                <span>t = <span data-t>0.0</span> s</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <figcaption class="mono"><b>Fig. 1</b> — One behavior, three formats, one clock. Every letter and bar in these frames is set by the same rule as the title, at the same moment. None was adjusted by hand, and none is the master from which the others were adapted.</figcaption>
+      </figure>
+    </div>
+  </div></div>
+</section>
+
+<aside class="band band-signal" aria-label="Pull quote">
+  <div class="wrap">
+    <p class="band-q">“The real deliverable is the generator, not any single output of it.”</p>
+    <p class="band-src mono cap">From § 02</p>
+  </div>
+</aside>
+
+<section class="sec" id="s03" data-sec="03" aria-labelledby="h03">
+  <div class="wrap"><div class="grid sec-grid">
+    <header class="sec-head"><span class="num" aria-hidden="true">03</span><h2 id="h03">Type carries the voice</h2></header>
+    <div class="body">
+      <p>If identity is behavior, typography is where most of the behavior happens, for a plain reason: type is the part of a brand people see most often. A logo occupies a corner. Letters are in every headline, every button label, every line of small print. Investing in letterforms is investing in the largest surface the brand has, and Porto Rocha’s identities tend to treat type as the primary carrier of character rather than as a neutral delivery system for a symbol.</p>
+      <p>The quality test for a brand typeface is severe and specific. At display size it has to hold an opinion: a proportion, a rhythm, a detail you would recognize with the name covered. At text size the opinion has to recede far enough that the letters can simply be read. Many expressive typefaces pass the first test and fail the second; many sensible ones pass the second and never attempt the first. The achievement is range: a voice that can shout and murmur and is plainly the same voice doing both.</p>
+      <p>Variable fonts make that range explicit. A variable font is not a set of styles; it is a continuous space, and the designer’s job is to decide which region of that space the brand may occupy and how it moves within it. Figure 2 is the space this page is set in: one family, two axes. Every letter on the page is a coordinate in it. The highlighted cells are the narrow band the title’s rule is allowed to travel. The restriction is not a limitation on the identity. It is the identity.</p>
+      <figure class="fig">
+        <div class="mx-axes mono"><span>Width → 62 to 125</span><span>Weight ↓ 100 to 900</span></div>
+        <div class="matrix" role="img" aria-label="A five by five grid of the lowercase letter a in Archivo. Width increases from 62 to 125 across the columns; weight increases from 100 to 900 down the rows. Five cells running from narrow and heavy to wide and light are highlighted.">
+          <span class="mx-l hd"></span><span class="mx-l hd">62</span><span class="mx-l hd">78</span><span class="mx-l hd">94</span><span class="mx-l hd">109</span><span class="mx-l hd">125</span>
+          <span class="mx-l v">100</span>
+          <span class="mx-c" style="font-stretch:62%;font-weight:100">a</span>
+          <span class="mx-c" style="font-stretch:78%;font-weight:100">a</span>
+          <span class="mx-c" style="font-stretch:94%;font-weight:100">a</span>
+          <span class="mx-c" style="font-stretch:109%;font-weight:100">a</span>
+          <span class="mx-c" style="font-stretch:125%;font-weight:100">a</span>
+          <span class="mx-l v">300</span>
+          <span class="mx-c" style="font-stretch:62%;font-weight:300">a</span>
+          <span class="mx-c" style="font-stretch:78%;font-weight:300">a</span>
+          <span class="mx-c" style="font-stretch:94%;font-weight:300">a</span>
+          <span class="mx-c" style="font-stretch:109%;font-weight:300">a</span>
+          <span class="mx-c on" style="font-stretch:125%;font-weight:300">a</span>
+          <span class="mx-l v">500</span>
+          <span class="mx-c" style="font-stretch:62%;font-weight:500">a</span>
+          <span class="mx-c" style="font-stretch:78%;font-weight:500">a</span>
+          <span class="mx-c on" style="font-stretch:94%;font-weight:500">a</span>
+          <span class="mx-c on" style="font-stretch:109%;font-weight:500">a</span>
+          <span class="mx-c" style="font-stretch:125%;font-weight:500">a</span>
+          <span class="mx-l v">700</span>
+          <span class="mx-c" style="font-stretch:62%;font-weight:700">a</span>
+          <span class="mx-c on" style="font-stretch:78%;font-weight:700">a</span>
+          <span class="mx-c" style="font-stretch:94%;font-weight:700">a</span>
+          <span class="mx-c" style="font-stretch:109%;font-weight:700">a</span>
+          <span class="mx-c" style="font-stretch:125%;font-weight:700">a</span>
+          <span class="mx-l v">900</span>
+          <span class="mx-c on" style="font-stretch:62%;font-weight:900">a</span>
+          <span class="mx-c" style="font-stretch:78%;font-weight:900">a</span>
+          <span class="mx-c" style="font-stretch:94%;font-weight:900">a</span>
+          <span class="mx-c" style="font-stretch:109%;font-weight:900">a</span>
+          <span class="mx-c" style="font-stretch:125%;font-weight:900">a</span>
+        </div>
+        <figcaption class="mono"><b>Fig. 2</b> — The design space of this page’s typeface: width across, weight down. The highlighted cells are the ones nearest the line the title’s rule travels: narrow and heavy at one end, wide and light at the other. The rest of the space is available to the typeface and refused by the identity.</figcaption>
+      </figure>
+    </div>
+  </div></div>
+</section>
+
+<section class="sec" id="s04" data-sec="04" aria-labelledby="h04">
+  <div class="wrap"><div class="grid sec-grid">
+    <header class="sec-head"><span class="num" aria-hidden="true">04</span><h2 id="h04">Motion is a material, not a finish</h2></header>
+    <div class="body">
+      <p>A great deal of motion in branding is applied after the fact. The identity is finished, and then someone is asked to make it move. The result is animation as decoration: a logo that spins or bounces because the screen permits it. The alternative is harder. Motion is treated as a material from the first sketch, so that movement expresses the same idea the static form expresses. When that works, the still frames look like moments captured from something alive, and the motion looks like the only way those forms could move.</p>
+      <p>The title at the top of this page is set by one rule. Each letter’s width follows a sine wave, offset by the letter’s position in the line. As a letter widens it loses weight; as it narrows it gains weight, so the overall darkness of the line stays roughly level while its shape changes continuously. Nothing in that movement is keyframed by hand. It is written as a score, and Figure 3 draws the score.</p>
+      <p>This is the smallest honest demonstration of the principle. The expression is real. It is also entirely determined, which means it can be specified, handed to another designer or a developer, and reproduced exactly. Expression that someone else can reproduce is what makes a system usable. Expression that nobody else can reproduce is a performance.</p>
+      <figure class="fig">
+        <div class="score-panel">
+          <p class="kin" aria-hidden="true"><span class="ln">Strict enough to dance.</span></p>
+          <svg id="score" class="score" viewBox="0 0 560 210" role="img" aria-label="Chart of the rule at the current moment. For each of the 23 characters in the sentence Strict enough to dance, the solid line shows width between 62 and 125 and the dashed line shows weight between 300 and 820. The two lines mirror each other.">
+            <line class="gl" x1="44" y1="24" x2="512" y2="24"/>
+            <line class="gl" x1="44" y1="94" x2="512" y2="94"/>
+            <line class="gl" x1="44" y1="164" x2="512" y2="164"/>
+            <text x="36" y="28" text-anchor="end">125</text>
+            <text x="36" y="98" text-anchor="end">93.5</text>
+            <text x="36" y="168" text-anchor="end">62</text>
+            <text x="520" y="28">820</text>
+            <text x="520" y="98">560</text>
+            <text x="520" y="168">300</text>
+            <path class="pg"/>
+            <path class="pw"/>
+            <g class="dots"></g>
+            <g class="labels"></g>
+          </svg>
+          <div class="score-legend mono"><span><i class="lg lg-w"></i>Width, left scale</span><span><i class="lg lg-g"></i>Weight, right scale</span></div>
+        </div>
+        <figcaption class="mono"><b>Fig. 3</b> — The score. For each character of the title, the solid line is width and the dashed line is weight, at this moment. The wave travels left to right through the sentence. The two lines always mirror each other, which is what keeps the line’s darkness roughly level.</figcaption>
+      </figure>
+    </div>
+  </div></div>
+</section>
+
+<section class="sec" id="s05" data-sec="05" aria-labelledby="h05">
+  <div class="wrap"><div class="grid sec-grid">
+    <header class="sec-head"><span class="num" aria-hidden="true">05</span><h2 id="h05">Confidence is a ratio</h2></header>
+    <div class="body">
+      <p>Expressive work gets called bold, and boldness is usually misread as volume. A saturated color is loud only against a quiet field. A system that lets every element be loud has no loud elements, just noise at a uniform level. The confident move is to decide where intensity goes and then protect the quiet around it.</p>
+      <p>Read this way, the intensity in the studio’s most saturated work is allocated rather than sprayed: a strong color is given a large, uninterrupted surface instead of being scattered across every component. The allocation is as consequential as the choice of the color, and it is the decision most often neglected.</p>
+      <p>This page runs on a declared budget, shown in Figure 4. One paper tone carries most of the surface. One ink carries text and structure. One signal color is reserved for surfaces and marks. It is never used as a text color on paper, because against this paper it measures about 2.9 to 1 in contrast, below the accessibility threshold for text of any size, and a page that argues for rigor does not get to exempt itself from the measurement.</p>
+      <figure class="fig">
+        <div class="budget" aria-hidden="true"><span></span><span></span><span></span></div>
+        <dl class="legend mono">
+          <div><dt><i class="sw sw-paper"></i>Paper #F1EFE8</dt><dd>The field. Most of the surface.</dd></div>
+          <div><dt><i class="sw sw-ink"></i>Ink #111110</dt><dd>Text, rules and structure.</dd></div>
+          <div><dt><i class="sw sw-signal"></i>Signal #FF4B1F</dt><dd>Surfaces and marks only. Never text on paper.</dd></div>
+        </dl>
+        <figcaption class="mono"><b>Fig. 4</b> — The color budget, as target proportions rather than a measurement: roughly three quarters paper, a fifth ink, a sliver of signal. The sliver is what makes the signal loud.</figcaption>
+      </figure>
+    </div>
+  </div></div>
+</section>
+
+<section class="sec" id="s06" data-sec="06" aria-labelledby="h06">
+  <div class="wrap"><div class="grid sec-grid">
+    <header class="sec-head"><span class="num" aria-hidden="true">06</span><h2 id="h06">The standard is the stress test</h2></header>
+    <div class="body">
+      <p>What separates expressive work that lasts from expressive work that dates is what happens at the edges. Any system looks good on the launch poster its authors designed. The questions that matter concern the least favorable cases. What does the identity do at sixteen pixels? In one color? On a cheap print run? In a language with longer words? In a slide deck made in a hurry by someone who joined the client last week? A system with no answers to those questions is a moodboard.</p>
+      <p>The standard the strongest work implies is that every one of those cases is designed rather than tolerated. The mark simplifies on purpose as it shrinks. The type has a register for small sizes. The motion has a resting state that is a complete composition, not a frozen accident. The specification is written so that someone outside the studio can produce a correct result without having to guess at the designers’ taste.</p>
+      <p>Figure 5 puts this page’s own mark through that test. The mark is a frozen frame of the title’s motion: bars whose widths sample the same wave. At 96 pixels and above it has nine bars. From 32 to 95 it has five. Below 32 it has three, so that at sixteen pixels it remains a shape instead of a smear. The reduction is part of the design, not a fallback, and it is in use: the mark in the bar at the top of this page is the three-bar version.</p>
+      <figure class="fig">
+        <div class="stress">
+          <div class="sx-master">
+            <svg class="mk mk-xl" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><use href="#m9"/></svg>
+            <p class="mono"><b>Master</b> · 9 bars · shown at 160 px</p>
+          </div>
+          <div class="sx-table">
+            <span class="sx-corner"></span>
+            <span class="sx-h mono">64 px</span>
+            <span class="sx-h mono">24 px</span>
+            <span class="sx-h mono">16 px</span>
+            <span class="sx-row mono cap">Designed down</span>
+            <span class="sx-c"><svg class="mk mk-m" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><use href="#m5"/></svg><span class="mono">5 bars</span></span>
+            <span class="sx-c"><svg class="mk mk-s" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><use href="#m3"/></svg><span class="mono">3 bars</span></span>
+            <span class="sx-c"><svg class="mk mk-xs" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><use href="#m3"/></svg><span class="mono">3 bars</span></span>
+            <span class="sx-row mono cap">Scaled down</span>
+            <span class="sx-c"><svg class="mk mk-m" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><use href="#m9"/></svg><span class="mono">9 bars</span></span>
+            <span class="sx-c"><svg class="mk mk-s" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><use href="#m9"/></svg><span class="mono">9 bars</span></span>
+            <span class="sx-c"><svg class="mk mk-xs" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><use href="#m9"/></svg><span class="mono">9 bars</span></span>
+          </div>
+        </div>
+        <figcaption class="mono"><b>Fig. 5</b> — The page’s mark, tested. Top row: the specified reductions. Bottom row: the nine-bar master shrunk without a rule. At 16 pixels the master’s gaps are under half a pixel wide (0.48 px) and blur together; the three-bar version keeps gaps of 1.6 pixels and stays a shape.</figcaption>
+      </figure>
+      <p>The rest of the standard is craft, which consists of decisions nobody notices individually. Letter spacing that tightens as type gets larger. Quotation marks that hang outside the text block so its edge stays clean. Movement that accelerates and settles the way a physical object does, instead of sliding at constant speed. Each is invisible alone. Together they are the difference between work that is designed well and work that merely has a design.</p>
+    </div>
+  </div></div>
+</section>
+
+<aside class="band band-ink" aria-label="Pull quote">
+  <div class="wrap">
+    <p class="band-q">“A system with no answers to those questions is a moodboard.”</p>
+    <p class="band-src mono cap">From § 06</p>
+  </div>
+</aside>
+
+<section class="sec" id="s07" data-sec="07" aria-labelledby="h07">
+  <div class="wrap"><div class="grid sec-grid">
+    <header class="sec-head"><span class="num" aria-hidden="true">07</span><h2 id="h07">The risk, and the defense</h2></header>
+    <div class="body">
+      <p>An honest assessment has to name the danger in this way of working. Behavior-led identities, with kinetic type, elastic layouts and saturated color, have become a recognizable style over the past several years, and recognizable styles converge. When a dozen brands breathe the same way, the breathing stops saying anything about any of them. A studio working in this register is always one lazy brief away from delivering the period look instead of the client’s identity.</p>
+      <p>The defense is specificity, and it can be tested. A system derived from a trend can be moved to another client without loss. A system derived from one organization’s particular idea cannot be moved without breaking. So ask why a brand’s letters move the way they do. If the honest answer is that motion is expected now, the work will date when the expectation changes. If the answer traces back to something true about the organization, the motion will outlast the fashion that first made it legible.</p>
+      <p>The claim of this essay is that Porto Rocha’s best work passes that test: its systems are hard to imagine on another client. Where any work in this register fails, the failure looks exactly like this: a system that would fit a different client equally well. That is the test to bring to the studio’s portfolio, and to every portfolio like it. This page tries to pass it too. Its motion is not decoration laid over an essay about rules. It is the thesis, performed: a rule, visibly dancing.</p>
+    </div>
+  </div></div>
+</section>
+
+<section class="sec" id="s08" data-sec="08" aria-labelledby="h08">
+  <div class="wrap"><div class="grid sec-grid">
+    <header class="sec-head"><span class="num" aria-hidden="true">08</span><h2 id="h08">Strict enough to dance</h2></header>
+    <div class="body">
+      <p class="lede">The phrase that best describes the ethos is a paradox that turns out not to be one: the work is strict enough to dance. Freedom in an identity is not the absence of rules. It is the presence of rules good enough that expression can happen inside them without falling apart, repeatedly, in hands other than the author’s.</p>
+      <p>Rigor is what makes the expression legible as one voice. Expression is what makes the rigor worth having. Neither is the point alone, and the work fails the moment either one is allowed to become the point.</p>
+      <p>That is the standard, and it is higher than beauty. Beauty can be achieved once, by accident. A system that keeps its voice at every size, in every format and in motion has to be designed on purpose, down to the sixteenth pixel. At its best, Porto Rocha’s work is designed to exactly that standard: the expression is never left to luck, and the rules are never allowed to become the point.</p>
+    </div>
+  </div></div>
+</section>
+</main>
+
+<footer class="colo" id="colophon">
+  <div class="wrap">
+    <p class="kin colo-kin" aria-hidden="true"><span class="ln">Strict enough</span><span class="ln">to dance.</span></p>
+    <h2 class="colo-h mono cap">Colophon: how this page is built</h2>
+    <dl class="grid spec">
+      <div><dt class="mono cap">Typeface</dt><dd>Archivo, a variable family with width (62–125) and weight (100–900) axes, sets every word. IBM Plex Mono sets specifications. Both load from Google Fonts; without them the page falls back to system fonts and stays complete.</dd></div>
+      <div><dt class="mono cap">Rule</dt><dd>φ = 1.6t − 0.42i, with t in seconds and i the character’s position in “Strict enough to dance.”, counting from 0. wdth = 93.5 + 31.5 sin φ; wght = 560 − 260 sin φ. Every kinetic word on the page runs on this rule and one shared clock.</dd></div>
+      <div><dt class="mono cap">Hierarchy</dt><dd>Section numbers sit at one end of the rule (wdth 62, wght 820); section titles at the other (wdth 125, wght 300). Body text sits off the rule, at wdth 100 and wght 400, where reading is the only job.</dd></div>
+      <div><dt class="mono cap">Color</dt><dd>Paper #F1EFE8, ink #111110, signal #FF4B1F. Signal never sets text on paper (about 2.9:1). Ink on signal measures about 5.6:1 and is used freely.</dd></div>
+      <div><dt class="mono cap">Mark</dt><dd>One period of the same wave, sampled at n bars: φ = 1.6t − 2πi/n. Nine bars at 96 px and above, five from 32 to 95 px, three below 32 px.</dd></div>
+      <div><dt class="mono cap">Grid</dt><dd>Twelve columns from 900 px, four below. Gutters scale from 16 to 40 px. The essay column is capped at 36 ems for reading.</dd></div>
+      <div><dt class="mono cap">Motion</dt><dd>Starts paused when the device asks for reduced motion. Pausable from the control under the title. Off-screen elements stop updating. If the typeface fails to load, motion switches off rather than animating a substitute font.</dd></div>
+      <div><dt class="mono cap">Method</dt><dd>No clients, projects, dates or quotations are cited (see § 01). Statements about the studio’s work are interpretation, to be tested against the portfolio.</dd></div>
+    </dl>
+    <div class="fine mono"><span>An independent essay. Not affiliated with or endorsed by Porto Rocha.</span><span>Set in Archivo and IBM Plex Mono.</span></div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var W0=93.5, WA=31.5, G0=560, GA=260, SPEED=1.6, STEP=0.42, TAU=Math.PI*2;
+  var STR="Strict enough to dance.";
+  var mq=window.matchMedia?window.matchMedia("(prefers-reduced-motion: reduce)"):null;
+  var playing=false, fontOK=true, t=0, last=0, raf=0, items=[];
+  function each(list,fn){Array.prototype.forEach.call(list,fn);}
+
+  /* Kinetic text: split every .kin into per-character spans, indexed against STR */
+  each(document.querySelectorAll(".kin"),function(root){
+    var chars=[], idx=0, lines=root.querySelectorAll(".ln");
+    each(lines,function(ln,li){
+      var text=ln.textContent.replace(/\s+/g," ").trim();
+      ln.textContent="";
+      for(var k=0;k<text.length;k++){
+        var s=document.createElement("span");
+        s.className="ch";
+        s.textContent=text.charAt(k)===" "?"\u00a0":text.charAt(k);
+        ln.appendChild(s);
+        chars.push({el:s,i:idx});
+        idx++;
+      }
+      if(li<lines.length-1){idx++;}
+    });
+    items.push({
+      el:root, vis:true,
+      paint:function(){
+        for(var j=0;j<chars.length;j++){
+          var s=Math.sin(SPEED*t-STEP*chars[j].i), st=chars[j].el.style;
+          st.fontStretch=(W0+WA*s).toFixed(1)+"%";
+          st.fontWeight=String(Math.round(G0-GA*s));
+        }
+      },
+      clear:function(){
+        for(var j=0;j<chars.length;j++){chars[j].el.style.fontStretch="";chars[j].el.style.fontWeight="";}
+      }
+    });
+  });
+
+  /* Live mark: bars sample one period of the same wave */
+  each(document.querySelectorAll(".live-mark"),function(svg){
+    var bars=svg.querySelectorAll(".lm-bar"), n=bars.length;
+    var gap=parseFloat(svg.getAttribute("data-gap"))||3;
+    var total=76-gap*(n-1), sum=n*W0;
+    items.push({
+      el:svg, vis:true,
+      paint:function(){
+        var x=12;
+        for(var i=0;i<n;i++){
+          var v=W0+WA*Math.sin(SPEED*t-TAU*i/n), w=v/sum*total;
+          bars[i].setAttribute("x",x.toFixed(2));
+          bars[i].setAttribute("width",w.toFixed(2));
+          x+=w+gap;
+        }
+      }
+    });
+  });
+
+  /* Score */
+  var sc=document.getElementById("score");
+  if(sc){
+    var NS="http://www.w3.org/2000/svg", N=STR.length, X0=44, X1=512, YT=24, YB=164, H=YB-YT, DX=(X1-X0)/(N-1);
+    var pW=sc.querySelector(".pw"), pG=sc.querySelector(".pg"), gD=sc.querySelector(".dots"), gL=sc.querySelector(".labels"), dots=[];
+    for(var q=0;q<N;q++){
+      var cx=(X0+q*DX).toFixed(1);
+      var c=document.createElementNS(NS,"circle");
+      c.setAttribute("cx",cx); c.setAttribute("r","3.5");
+      gD.appendChild(c); dots.push(c);
+      var tx=document.createElementNS(NS,"text");
+      tx.setAttribute("x",cx); tx.setAttribute("y","192"); tx.setAttribute("text-anchor","middle");
+      tx.textContent=STR.charAt(q)===" "?"·":STR.charAt(q);
+      gL.appendChild(tx);
+    }
+    items.push({
+      el:sc, vis:true,
+      paint:function(){
+        var dw="", dg="", S=110;
+        for(var k=0;k<=S;k++){
+          var ii=k/S*(N-1), s=Math.sin(SPEED*t-STEP*ii), x=(X0+ii*DX).toFixed(1);
+          dw+=(k?"L":"M")+x+" "+(YB-(1+s)/2*H).toFixed(1);
+          dg+=(k?"L":"M")+x+" "+(YB-(1-s)/2*H).toFixed(1);
+        }
+        pW.setAttribute("d",dw); pG.setAttribute("d",dg);
+        for(var j=0;j<N;j++){
+          var s2=Math.sin(SPEED*t-STEP*j);
+          dots[j].setAttribute("cy",(YB-(1+s2)/2*H).toFixed(1));
+        }
+      }
+    });
+  }
+
+  /* Readouts */
+  var roW=document.getElementById("roW"), roG=document.getElementById("roG"), tEls=document.querySelectorAll("[data-t]");
+  function paintReadout(){
+    var s=Math.sin(SPEED*t);
+    if(roW){roW.textContent=(W0+WA*s).toFixed(1);}
+    if(roG){roG.textContent=String(Math.round(G0-GA*s));}
+    each(tEls,function(e){e.textContent=t.toFixed(1);});
+  }
+
+  /* Only update what is on screen */
+  if("IntersectionObserver" in window){
+    var io=new IntersectionObserver(function(es){
+      each(es,function(e){
+        for(var k=0;k<items.length;k++){ if(items[k].el===e.target){items[k].vis=e.isIntersecting;} }
+      });
+    },{rootMargin:"80px 0px"});
+    each(items,function(it){it.vis=false; io.observe(it.el);});
+  }
+
+  /* Clock */
+  function frame(now){
+    if(!playing){raf=0;return;}
+    if(!last){last=now;}
+    var dt=Math.min(0.1,Math.max(0,(now-last)/1000));
+    last=now; t+=dt;
+    for(var k=0;k<items.length;k++){ if(items[k].vis){items[k].paint();} }
+    paintReadout();
+    raf=requestAnimationFrame(frame);
+  }
+  function start(){
+    if(raf||!fontOK){return;}
+    playing=true; last=0;
+    raf=requestAnimationFrame(frame);
+  }
+  function stop(){
+    playing=false;
+    if(raf){cancelAnimationFrame(raf);raf=0;}
+    if(fontOK){each(items,function(it){it.paint();});}
+    paintReadout();
+  }
+
+  var btn=document.getElementById("motion");
+  function label(){
+    if(!btn){return;}
+    if(!fontOK){btn.textContent="Motion off: font unavailable";btn.disabled=true;return;}
+    btn.textContent=playing?"Pause motion":"Play motion";
+  }
+  if(btn){
+    btn.addEventListener("click",function(){ if(playing){stop();}else{start();} label(); });
+  }
+  if(mq){
+    var onMq=function(){ if(mq.matches){stop();} label(); };
+    if(mq.addEventListener){mq.addEventListener("change",onMq);}
+    else if(mq.addListener){mq.addListener(onMq);}
+  }
+
+  function noFont(){
+    fontOK=false; playing=false;
+    if(raf){cancelAnimationFrame(raf);raf=0;}
+    each(items,function(it){ if(it.clear){it.clear();} });
+    label();
+  }
+  if(document.fonts&&document.fonts.load){
+    document.fonts.load('560 100px "Archivo"').then(function(list){
+      if(!list||!list.length){noFont();}
+    },noFont);
+  }
+
+  /* Initial frame, then run unless reduced motion is requested */
+  each(items,function(it){it.paint();});
+  paintReadout();
+  if(!(mq&&mq.matches)){start();}
+  label();
+
+  /* Section indicator */
+  var secNow=document.getElementById("secnow");
+  if(secNow&&"IntersectionObserver" in window){
+    var so=new IntersectionObserver(function(es){
+      each(es,function(e){ if(e.isIntersecting){secNow.textContent=e.target.getAttribute("data-sec");} });
+    },{rootMargin:"-45% 0px -50% 0px"});
+    each(document.querySelectorAll("[data-sec]"),function(s){so.observe(s);});
+  }
+
+  /* Reading progress */
+  var prog=document.getElementById("prog"), ticking=false;
+  function onScroll(){
+    ticking=false;
+    var d=document.documentElement, max=d.scrollHeight-d.clientHeight;
+    var y=window.pageYOffset||d.scrollTop||0;
+    var p=max>0?y/max:0;
+    if(prog){prog.style.transform="scaleX("+Math.max(0,Math.min(1,p)).toFixed(4)+")";}
+  }
+  window.addEventListener("scroll",function(){
+    if(!ticking){ticking=true;requestAnimationFrame(onScroll);}
+  },{passive:true});
+  onScroll();
+})();
+</script>
+</body>
+</html>
